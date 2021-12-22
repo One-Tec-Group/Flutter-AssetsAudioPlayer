@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:bot_toast/bot_toast.dart';
+
 import 'cache/cache_downloader.dart';
 import 'cache/cache_manager.dart';
 import 'notification.dart';
@@ -1458,6 +1460,8 @@ class AssetsAudioPlayer {
   Future<Audio> _downloadOrFetchFromCacheIfNecessary(Audio input) async {
     return AssetsAudioPlayerCacheManager().transform(_audioPlayerCache, input,
         (downloadInfos) {
+      debugPrint("downloadInfos $downloadInfos");
+      BotToast.showText(text: "${downloadInfos.percent.toString()} %");
       _cacheDownloadInfos.add(downloadInfos);
     });
   }

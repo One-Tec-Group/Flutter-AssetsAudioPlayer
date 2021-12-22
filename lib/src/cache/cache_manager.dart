@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
+
 import '../playable.dart';
 import 'cache.dart';
 import 'cache_downloader.dart';
@@ -18,6 +20,8 @@ class AssetsAudioPlayerCacheManager {
     Audio audio,
     CacheDownloadListener cacheDownloadListener,
   ) async {
+    debugPrint("transform ${audio.audioType} ${audio.cached}");
+
     if (audio.audioType != AudioType.network || audio.cached == false) {
       return audio;
     }
@@ -25,9 +29,11 @@ class AssetsAudioPlayerCacheManager {
     final key = await cache.audioKeyTransformer(audio);
     final path = await cache.cachePathProvider(audio, key);
     if (await _fileExists(path)) {
+      debugPrint("transform _fileExists");
       return audio.copyWith(path: path, audioType: AudioType.file);
     } else {
       try {
+        debugPrint("transform start _download");
         await _download(audio, path, cacheDownloadListener);
         return audio.copyWith(path: path, audioType: AudioType.file);
       // ignore: empty_catches
@@ -48,7 +54,7 @@ class AssetsAudioPlayerCacheManager {
     String intoPath,
     CacheDownloadListener cacheDownloadListener,
   ) async {
-    print(intoPath);
+    print("intoPath $intoPath");
     if (_downloadingElements.containsKey(intoPath)) {
       // is already downloading it
       final downloader = _downloadingElements[intoPath];
